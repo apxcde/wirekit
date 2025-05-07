@@ -1,6 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "apxcde/wirekit,"type": "project",
+    "name": "apxcde/wirekit",
+    "type": "project",
     "description": "An opinionated starter kit for building laravels applications.",
     "keywords": [
         "laravel",
