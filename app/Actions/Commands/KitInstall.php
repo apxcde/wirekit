@@ -39,6 +39,10 @@ final class KitInstall
         $this->runMigrations($command);
 
         $this->setProjectName($command);
+
+        $this->initializeGitRepository($command);
+
+        return 0;
     }
 
     private function handleGitRepository(Command $command)
@@ -135,5 +139,39 @@ final class KitInstall
         );
 
         $this->updateEnv('APP_URL', $url);
+    }
+
+    private function initializeGitRepository(Command $command)
+    {
+        if ($this->initializeGit) {
+            $command->line('Initializing Git repository...');
+            $command->line('');
+
+            exec('git init');
+
+            if (! File::exists(base_path('.gitignore'))) {
+                File::put(base_path('.gitignore'), implode("\n", [
+                    '/.phpunit.cache',
+                    '/vendor',
+                    'composer.phar',
+                    'composer.lock',
+                    '.DS_Store',
+                    'Thumbs.db',
+                    '/phpunit.xml',
+                    '/.idea',
+                    '/.fleet',
+                    '/.vscode',
+                    '.phpunit.result.cache',
+                ]));
+                $command->info('Created .gitignore file.');
+                $command->line('');
+            }
+
+            exec('git add .');
+            exec('git commit -m "Initial commit"');
+
+            $command->info('Git repository initialized with initial commit.');
+            $command->line('');
+        }
     }
 }
