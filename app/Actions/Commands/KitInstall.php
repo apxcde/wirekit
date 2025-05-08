@@ -32,7 +32,7 @@ final class KitInstall
     {
         $this->handleGitRepository($command);
 
-        $this->setUpEnvFile($command);
+        // $this->setUpEnvFile($command);
 
         $this->reloadEnvironment();
 
