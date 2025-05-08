@@ -32,11 +32,15 @@ final class KitInstall
     {
         $this->handleGitRepository($command);
 
-        // $this->setUpEnvFile($command);
+        $this->setUpEnvFile($command);
 
         $this->reloadEnvironment();
 
         $this->runMigrations($command);
+
+        $this->setProjectName($command);
+
+        $this->handleFluxActivation($command);
 
         $this->initializeGitRepository($command);
 
@@ -109,6 +113,40 @@ final class KitInstall
         $app->bootstrapWith([
             \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         ]);
+    }
+
+    private function setProjectName(Command $command)
+    {
+        if (env('APP_NAME') !== 'WireKit') {
+            $command->line('Project name already set. Skipping.');
+            return;
+        }
+
+        $defaultName = basename(getcwd());
+        $name = text(
+            label: 'What is the name of your project?',
+            placeholder: $defaultName,
+            default: $defaultName,
+            required: true
+        );
+
+        $this->updateEnv('APP_NAME', $name);
+
+        $defaultUrl = "http://{$name}.test";
+        $url = text(
+            label: 'What is the URL of your project?',
+            placeholder: $defaultUrl,
+            default: $defaultUrl,
+            required: true
+        );
+
+        $this->updateEnv('APP_URL', $url);
+    }
+
+    private function handleFluxActivation(Command $command)
+    {
+        $command->line('Starter kit requires Flux Pro...');
+        $command->line('');
     }
 
     private function initializeGitRepository(Command $command)
