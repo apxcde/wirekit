@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\File;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\text;
 
 final class KitInstall
 {
@@ -36,6 +37,8 @@ final class KitInstall
         $this->reloadEnvironment();
 
         $this->runMigrations($command);
+
+        $this->setProjectName($command);
     }
 
     private function handleGitRepository(Command $command)
@@ -104,5 +107,33 @@ final class KitInstall
         $app->bootstrapWith([
             \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         ]);
+    }
+
+    private function setProjectName(Command $command)
+    {
+         if (env('APP_NAME') !== 'Laravel') {
+            $command->line('Project name already set. Skipping.');
+            return;
+        }
+
+        $defaultName = $command->argument('name') ?: basename(getcwd());
+        $name = text(
+            label: 'What is the name of your project?',
+            placeholder: $defaultName,
+            default: $defaultName,
+            required: true
+        );
+
+        $this->updateEnv('APP_NAME', $name);
+
+        $defaultUrl = 'http://{$name}.test';
+        $url = text(
+            label: 'What is the URL of your project?',
+            placeholder: $defaultUrl,
+            default: $defaultUrl,
+            required: true
+        );
+
+        $this->updateEnv('APP_URL', $url);
     }
 }
