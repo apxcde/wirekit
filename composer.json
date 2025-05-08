@@ -56,8 +56,7 @@
         "post-create-project-cmd": [
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan key:generate --ansi",
-            "@php artisan kit:install",
-            "@rm app/Actions/Commands/KitInstall.php"
+            "@php artisan kit:install"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

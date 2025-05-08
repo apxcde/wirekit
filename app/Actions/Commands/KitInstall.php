@@ -13,7 +13,7 @@ final class KitInstall
 {
     use AsAction;
 
-    public $commandSignature = 'kit:install {name? : Project name}';
+    public $commandSignature = 'kit:install';
 
     public $commandDescription = 'Run WireKit installation process';
 
@@ -37,8 +37,6 @@ final class KitInstall
         $this->reloadEnvironment();
 
         $this->runMigrations($command);
-
-        $this->setProjectName($command);
 
         $this->initializeGitRepository($command);
 
@@ -111,34 +109,6 @@ final class KitInstall
         $app->bootstrapWith([
             \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
         ]);
-    }
-
-    private function setProjectName(Command $command)
-    {
-         if (env('APP_NAME') !== 'Laravel') {
-            $command->line('Project name already set. Skipping.');
-            return;
-        }
-
-        $defaultName = $command->argument('name') ?: basename(getcwd());
-        $name = text(
-            label: 'What is the name of your project?',
-            placeholder: $defaultName,
-            default: $defaultName,
-            required: true
-        );
-
-        $this->updateEnv('APP_NAME', $name);
-
-        $defaultUrl = 'http://{$name}.test';
-        $url = text(
-            label: 'What is the URL of your project?',
-            placeholder: $defaultUrl,
-            default: $defaultUrl,
-            required: true
-        );
-
-        $this->updateEnv('APP_URL', $url);
     }
 
     private function initializeGitRepository(Command $command)
