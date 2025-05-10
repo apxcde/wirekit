@@ -141,65 +141,6 @@ final class KitInstall
         $this->updateEnv('APP_URL', $url);
     }
 
-    private function handleFluxActivation(Command $command)
-    {
-        $defaultSourceAuthJson = $_SERVER['HOME'].'/.flux/auth.json';
-        $sourceAuthJson = text(
-            label: 'Where is your Flux auth.json file located?',
-            placeholder: $defaultSourceAuthJson,
-            default: $defaultSourceAuthJson,
-            required: true
-        );
-
-        if (File::exists($sourceAuthJson)) {
-            $command->line('Found auth.json. Copying to application...');
-            $command->line('');
-
-            File::copy($sourceAuthJson, base_path('auth.json'));
-            $command->info('auth.json copied successfully.');
-            $command->line('');
-
-            $command->line('Adding Flux Pro repository to composer.json...');
-            $command->line('');
-
-            if (! isset($composerJson['repositories']['flux-pro'])) {
-                $composerJson['repositories']['flux-pro'] = [
-                    'type' => 'composer',
-                    'url' => 'https://composer.fluxui.dev',
-                ];
-            }
-
-            if (! isset($composerJson['require']['livewire/flux-pro'])) {
-                $composerJson['require']['livewire/flux-pro'] = '^2.0';
-            }
-
-            file_put_contents(
-                base_path('composer.json'),
-                json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-            );
-
-            $command->line('Running composer update to install Flux Pro...');
-            exec('composer update livewire/flux-pro --no-interaction');
-
-            $command->info('Flux Pro activated successfully.');
-            $command->line('');
-
-            return;
-        }
-
-        $hasFluxPro = confirm('Do you have a Flux Pro account?', false);
-
-        if ($hasFluxPro) {
-            $command->line('Running flux:activate command...');
-            $command->line('');
-
-            $command->call('flux:activate');
-        } else {
-            $command->comment('This starter kit uses some Flux Pro components, however, feel free to remove them if needed.');
-            $command->line('');
-        }
-    }
-
     private function initializeGitRepository(Command $command)
     {
         if ($this->initializeGit) {
