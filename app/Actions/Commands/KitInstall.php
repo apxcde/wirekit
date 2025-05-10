@@ -40,11 +40,9 @@ final class KitInstall
 
         $this->setProjectName($command);
 
-        $this->handleFluxActivation($command);
-
         $this->initializeGitRepository($command);
 
-        return 0;
+        return;
     }
 
     private function handleGitRepository(Command $command)
