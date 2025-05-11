@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Commands;
+namespace App\Actions\Commands\Kit;
 
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;

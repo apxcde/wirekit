@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Commands;
+namespace App\Actions\Commands\Kit;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -9,7 +9,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
-final class KitInstall
+final class Install
 {
     use AsAction;
 
@@ -30,46 +30,15 @@ final class KitInstall
 
     public function handle(Command $command)
     {
-        $this->handleGitRepository($command);
-
         $this->setUpEnvFile($command);
+
+        $this->setProjectName($command);
 
         $this->reloadEnvironment();
 
         $this->runMigrations($command);
 
-        $this->setProjectName($command);
-
-        $this->initializeGitRepository($command);
-
         return;
-    }
-
-    private function handleGitRepository(Command $command)
-    {
-        $command->line('Checking if git repository exists...');
-        $command->line('');
-
-        if (File::isDirectory(base_path('.git'))) {
-            $command->info('Git repository already exists.');
-            $command->line('');
-            return;
-        }
-
-        $this->initializeGit = confirm('Initialize Git repository after installation?', true);
-    }
-
-    private function setUpEnvFile(Command $command)
-    {
-        if (! File::exists('.env') && File::exists('.env.example')) {
-            $command->line('Creating .env file...');
-            File::copy('.env.example', '.env');
-        }
-
-        $envContent = File::get('.env');
-        if (! preg_match('/^APP_ENV=local/m', $envContent)) {
-            $this->updateEnv('APP_ENV', 'local');
-        }
     }
 
     private function updateEnv(string $key, string $value)
@@ -83,6 +52,27 @@ final class KitInstall
                 file_get_contents($path)
             ));
         }
+    }
+
+    private function setUpEnvFile(Command $command)
+    {
+        if (! File::exists('.env') && File::exists('.env.example')) {
+            $command->line('Creating the .env file...');
+            File::copy('.env.example', '.env');
+        }
+
+        $envContent = File::get('.env');
+        if (! preg_match('/^APP_ENV=local/m', $envContent)) {
+            $this->updateEnv('APP_ENV', 'local');
+        }
+    }
+
+    private function reloadEnvironment()
+    {
+        $app = app();
+        $app->bootstrapWith([
+            \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
+        ]);
     }
 
     private function runMigrations(Command $command)
@@ -103,14 +93,6 @@ final class KitInstall
                 '--ansi' => true,
             ]);
         }
-    }
-
-    private function reloadEnvironment()
-    {
-        $app = app();
-        $app->bootstrapWith([
-            \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
-        ]);
     }
 
     private function setProjectName(Command $command)
@@ -139,39 +121,5 @@ final class KitInstall
         );
 
         $this->updateEnv('APP_URL', $url);
-    }
-
-    private function initializeGitRepository(Command $command)
-    {
-        if ($this->initializeGit) {
-            $command->line('Initializing Git repository...');
-            $command->line('');
-
-            exec('git init');
-
-            if (! File::exists(base_path('.gitignore'))) {
-                File::put(base_path('.gitignore'), implode("\n", [
-                    '/.phpunit.cache',
-                    '/vendor',
-                    'composer.phar',
-                    'composer.lock',
-                    '.DS_Store',
-                    'Thumbs.db',
-                    '/phpunit.xml',
-                    '/.idea',
-                    '/.fleet',
-                    '/.vscode',
-                    '.phpunit.result.cache',
-                ]));
-                $command->info('Created .gitignore file.');
-                $command->line('');
-            }
-
-            exec('git add .');
-            exec('git commit -m "Initial commit"');
-
-            $command->info('Git repository initialized with initial commit.');
-            $command->line('');
-        }
     }
 }

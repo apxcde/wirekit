@@ -57,7 +57,8 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan key:generate --ansi",
             "@php artisan kit:install",
-            "@php artisan kit:activate-flux"
+            "@php artisan kit:activate-flux",
+            "@php artisan kit:initialize-git"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
