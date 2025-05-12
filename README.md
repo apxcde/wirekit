@@ -1,7 +1,7 @@
 # WireKit
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/apxcde/wirekit.svg?style=flat-square)](https://packagist.org/packages/apxcde/wirekit)
-[![Tests](https://github.com/apxcde/wirekit/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/apxcde/wirekit/actions/workflows/run-tests.yml)
+[![Tests](https://github.com/apxcde/wirekit/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/apxcde/wirekit/actions/workflows/tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/apxcde/wirekit.svg?style=flat-square)](https://packagist.org/packages/apxcde/wirekit)
 
 > [!IMPORTANT]
