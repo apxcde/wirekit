@@ -58,7 +58,8 @@
             "@php artisan key:generate --ansi",
             "@php artisan kit:install",
             "@php artisan kit:activate-flux",
-            "@php artisan kit:initialize-git"
+            "@php artisan kit:initialize-git",
+            "@php artisan kit:clean-up"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

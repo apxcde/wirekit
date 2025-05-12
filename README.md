@@ -1,5 +1,9 @@
 # WireKit
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/apxcde/wirekit.svg?style=flat-square)](https://packagist.org/packages/apxcde/wirekit)
+[![Tests](https://github.com/apxcde/wirekit/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/apxcde/wirekit/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/apxcde/wirekit.svg?style=flat-square)](https://packagist.org/packages/apxcde/wirekit)
+
 > [!IMPORTANT]
 > This is an opinionated starter kit created by [ApexCode](https://apexcode.dev) using Laravel, Livewire, Folio, Livewire Volt and [FluxUI](https://fluxui.dev/). This was made to fit our needs.
 
