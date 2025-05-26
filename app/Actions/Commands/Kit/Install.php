@@ -30,7 +30,7 @@ final class Install
         $this->runMigrations();
     }
 
-    private function runMigrations(): void
+    private function runMigrations(Command $command): void
     {
         if (confirm('Do you want to run database migrations?', true)) {
             $command->line('Running database migrations...');
