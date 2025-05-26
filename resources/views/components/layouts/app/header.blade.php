@@ -1,97 +1,124 @@
-<?php
-use App\Livewire\Actions\Logout;
-use Livewire\Volt\Component;
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+    <head>
+        @include('partials.head')
+    </head>
+    <body class="min-h-screen bg-white dark:bg-zinc-800">
+        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-new class extends Component {
-    /**
-     * Log the current user out of the application.
-     */
-    public function logout(Logout $logout): void
-    {
-        $logout();
+            <a href="{{ route('dashboard') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" wire:navigate>
+                <x-app-logo />
+            </a>
 
-        $this->redirect('/', navigate: true);
-    }
-};
-?>
+            <flux:navbar class="-mb-px max-lg:hidden">
+                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    {{ __('Dashboard') }}
+                </flux:navbar.item>
+            </flux:navbar>
 
-    <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+            <flux:spacer />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+            <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
+                <flux:tooltip :content="__('Search')" position="bottom">
+                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
+                </flux:tooltip>
+                <flux:tooltip :content="__('Repository')" position="bottom">
+                    <flux:navbar.item
+                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
+                        icon="folder-git-2"
+                        href="https://github.com/laravel/livewire-starter-kit"
+                        target="_blank"
+                        :label="__('Repository')"
+                    />
+                </flux:tooltip>
+                <flux:tooltip :content="__('Documentation')" position="bottom">
+                    <flux:navbar.item
+                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
+                        icon="book-open-text"
+                        href="https://laravel.com/docs/starter-kits#livewire"
+                        target="_blank"
+                        label="Documentation"
+                    />
+                </flux:tooltip>
+            </flux:navbar>
 
-    <title>{{ config('app.name', 'My Laravel App') }}</title>
+            <!-- Desktop User Menu -->
+            <flux:dropdown position="top" align="end">
+                <flux:profile
+                    class="cursor-pointer"
+                    :initials="auth()->user()->initials()"
+                />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap" rel="stylesheet">
+                <flux:menu>
+                    <flux:menu.radio.group>
+                        <div class="p-0 text-sm font-normal">
+                            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                                    <span
+                                        class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
+                                    >
+                                        {{ auth()->user()->initials() }}
+                                    </span>
+                                </span>
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @fluxAppearance
-</head>
+                                <div class="grid flex-1 text-start text-sm leading-tight">
+                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </flux:menu.radio.group>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-<flux:header container
-             class="pt-2 border-b bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 lg:pt-0">
-    <flux:sidebar.toggle class="lg:hidden" icon="bars-2" />
+                    <flux:menu.separator />
 
-    <flux:brand href="#" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc."
-                class="max-lg:hidden dark:hidden" />
-    <flux:brand href="#" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc."
-                class="max-lg:!hidden hidden dark:flex" />
+                    <flux:menu.radio.group>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                    </flux:menu.radio.group>
 
-    <flux:navbar class="max-lg:hidden">
-        <flux:navbar.item icon="home" href="/" wire:navigate>Home</flux:navbar.item>
-        <flux:separator vertical variant="subtle" class="my-2" />
-        <flux:navbar.item icon="face-smile" href="/playground" wire:navigate>Playground</flux:navbar.item>
+                    <flux:menu.separator />
 
-    </flux:navbar>
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                            {{ __('Log Out') }}
+                        </flux:menu.item>
+                    </form>
+                </flux:menu>
+            </flux:dropdown>
+        </flux:header>
 
-    <flux:spacer />
+        <!-- Mobile Menu -->
+        <flux:sidebar stashable sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
+            <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+                <x-app-logo />
+            </a>
 
-    <flux:dropdown position="bottom" align="end">
-        <flux:button icon-trailing="chevron-down" variant="ghost">{{ auth()->user()->name }}</flux:button>
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Platform')">
+                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
 
-        @volt('layout.navigation.profile.dropdown')
-        <flux:navmenu>
-            <flux:navmenu.item href="" wire:navigate icon="building-storefront">Profile
-            </flux:navmenu.item>
-            <flux:navmenu.item wire:click='logout' icon="arrow-right-start-on-rectangle">Logout</flux:navmenu.item>
-        </flux:navmenu>
-        @endvolt
-    </flux:dropdown>
-</flux:header>
+            <flux:spacer />
 
-<flux:sidebar stashable sticky
-              class="border-r lg:hidden bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700">
-    <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
+            <flux:navlist variant="outline">
+                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                {{ __('Repository') }}
+                </flux:navlist.item>
 
-    <flux:brand href="/" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc."
-                class="px-2 dark:hidden" />
-    <flux:brand href="/" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc."
-                class="hidden px-2 dark:flex" />
+                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
+                {{ __('Documentation') }}
+                </flux:navlist.item>
+            </flux:navlist>
+        </flux:sidebar>
 
-    <flux:navlist variant="outline">
-        <flux:navlist.item icon="home" href="/">Home</flux:navlist.item>
-        <flux:navlist.item icon="face-smile" href="/playground">Playground</flux:navlist.item>
-    </flux:navlist>
-</flux:sidebar>
-
-<flux:main container>
-    <div class="self-stretch flex-1 max-md:pt-6">
         {{ $slot }}
-    </div>
-</flux:main>
-@persist('toast')
-{{--<flux:toast />--}}
-@endpersist
-@fluxScripts()
-</body>
 
+        @fluxScripts
+    </body>
 </html>
