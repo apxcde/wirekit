@@ -17,8 +17,6 @@ final class Install
 
     public $commandDescription = 'Run WireKit installation process';
 
-    private bool $initializeGit = false;
-
     public function asCommand(Command $command): void
     {
         $command->line('Starting WireKit installation process...');
