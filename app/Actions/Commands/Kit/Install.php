@@ -27,7 +27,7 @@ final class Install
 
     public function handle(Command $command): void
     {
-        $this->runMigrations();
+        $this->runMigrations($command);
     }
 
     private function runMigrations(Command $command): void
