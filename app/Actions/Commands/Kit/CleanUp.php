@@ -71,8 +71,8 @@ final class CleanUp
             fn($cmd) => !in_array($cmd, [
                 '@php artisan kit:install',
                 '@php artisan kit:activate-flux',
-                '@php artisan, kit:select-auth-layout',
-                '@php artisan, kit:select-app-layout',
+                '@php artisan kit:select-auth-layout',
+                '@php artisan kit:select-app-layout',
                 '@php artisan kit:initialize-git',
                 '@php artisan kit:clean-up'
             ])
