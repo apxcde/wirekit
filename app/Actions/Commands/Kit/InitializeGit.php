@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Commands;
+namespace App\Actions\Commands\Kit;
 
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Console\Command;
@@ -31,8 +31,7 @@ final class InitializeGit
 
         exec('git init');
 
-        exec('git add .');
-        exec('git commit -m "WIREKIT: Initial commit"');
+        self::commit('Initial commit');
 
         $command->info('Git repository initialized.');
         $command->line('');
@@ -45,7 +44,7 @@ final class InitializeGit
 
         $this->handle($command);
 
-        if (File::isDirectory(base_path('.git'))) {
+        if (self::hasGitRepository()) {
             $command->info('Git repository already exists.');
             $command->line('');
             return;
@@ -54,5 +53,16 @@ final class InitializeGit
         $this->initializeGit = confirm('Initialize Git repository after installation?', true);
 
         $this->handle($command);
+    }
+
+    public static function hasGitRepository()
+    {
+        return File::isDirectory(base_path('.git'));
+    }
+
+    public static function commit(string $message)
+    {
+        exec('git add .');
+        exec('git commit -m "WIREKIT: ' . $message . '"');
     }
 }
