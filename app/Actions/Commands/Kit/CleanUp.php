@@ -58,6 +58,7 @@ final class CleanUp
         $json['scripts']['post-create-project-cmd'] = array_values(array_filter(
             $json['scripts']['post-create-project-cmd'],
             fn($cmd) => !in_array($cmd, [
+                '@php artisan kit:install',
                 '@php artisan kit:initialize-git',
                 '@php artisan kit:clean-up'
             ])
