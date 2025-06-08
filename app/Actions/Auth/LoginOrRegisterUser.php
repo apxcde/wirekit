@@ -24,9 +24,7 @@ final class LoginOrRegisterUser
                 [ 'user' => $user->id ]
             );
 
-            dump($url);
-
-            // Mail::to($user)->send(new MagicLoginLink($url));
+            Mail::to($user)->send(new MagicLoginLink($url));
 
             return true;
         } catch (\Exception $exception) {
