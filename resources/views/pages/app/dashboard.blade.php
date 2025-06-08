@@ -8,7 +8,7 @@ name('dashboard');
 
 ?>
 
-<x-layouts.app>
+<x-layouts.app :title="Dashboard">
     <div class="container mx-auto">
         <h1>Dashboard</h1>
     </div>
