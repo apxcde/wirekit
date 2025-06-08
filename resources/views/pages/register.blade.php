@@ -52,13 +52,8 @@ new class extends Component {
                     </div>
             
                     <div>
-                        <div class="relative mt-10">
-                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
-                            </div>
-                            <div class="relative flex justify-center text-sm/6 font-medium">
-                            <span class="bg-white dark:bg-zinc-800 px-6 text-zinc-900 dark:text-zinc-100">Or continue with</span>
-                            </div>
+                        <div class="mt-6">
+                            <flux:separator text="Or continue with" />
                         </div>
                 
                         <div class="mt-6 grid grid-cols-2 gap-4">

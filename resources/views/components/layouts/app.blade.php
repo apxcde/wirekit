@@ -36,7 +36,7 @@ new class extends Component {
         <flux:button wire:click='logout' variant="ghost">Logout</flux:button>
     @endvolt
 
-{{ $slot }}
+    {{ $slot }}
 
 @fluxScripts
 </body>
