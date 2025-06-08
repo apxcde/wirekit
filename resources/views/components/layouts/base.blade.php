@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @fluxAppearance
 </head>
-<body>
+<body class="bg-zinc-50 dark:bg-zinc-900">
 
 {{ $slot }}
 
