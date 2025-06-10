@@ -57,6 +57,7 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi",
             "@php artisan kit:install",
+            "@php artisan kit:activate-flux",
             "@php artisan kit:initialize-git",
             "@php artisan kit:clean-up"
         ],
