@@ -1,3 +1,3 @@
-<x-layouts.app.sidebar>
+<x-layouts.app.header>
     {{ $slot }}
-</x-layouts.app.sidebar>
+</x-layouts.app.header>

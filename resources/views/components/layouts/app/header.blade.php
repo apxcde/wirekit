@@ -41,7 +41,7 @@
             <flux:profile :initials="auth()->user()->initials()" />
             
             <flux:menu>
-                <flux:menu.item icon="user" href="#">Profile</flux:menu.item>
+                <flux:menu.item icon="user" href="#">Account</flux:menu.item>
                 <flux:menu.separator />
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf

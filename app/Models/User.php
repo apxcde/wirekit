@@ -36,8 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return Str::of($this->email)
-            ->explode('@')
-            ->map(fn (string $email) => Str::of($email)->substr(0, 1)->upper())
-            ->implode('');
+            ->substr(0, 2)
+            ->upper()
+            ->toString();
     }
 }

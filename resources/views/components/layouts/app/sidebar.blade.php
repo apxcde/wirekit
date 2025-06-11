@@ -33,7 +33,7 @@
         <flux:dropdown position="top" align="start" class="max-lg:hidden">
             <flux:profile :initials="auth()->user()->initials()" name="{{ auth()->user()->name ?? auth()->user()->email }}" />
             <flux:menu>
-                <flux:menu.item icon="user" href="#">Profile</flux:menu.item>
+                <flux:menu.item icon="user" href="#">Account</flux:menu.item>
                 <flux:menu.separator />
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
@@ -49,14 +49,16 @@
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         <flux:spacer />
         <flux:dropdown position="top" alignt="start">
-            <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
+            <flux:profile :initials="auth()->user()->initials()" name="{{ auth()->user()->name ?? auth()->user()->email }}" />
             <flux:menu>
-                <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
-                </flux:menu.radio.group>
+                <flux:menu.item icon="user" href="#">Account</flux:menu.item>
                 <flux:menu.separator />
-                <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                        Logout
+                    </flux:menu.item>
+                </form>
             </flux:menu>
         </flux:dropdown>
     </flux:header>
