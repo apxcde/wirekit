@@ -11,14 +11,10 @@ use Lorisleiva\Actions\Concerns\AsAction;
 final class SocialiteCallback
 {
     use AsAction;
-
+    
     public function asController(string $provider): RedirectResponse
     {
-        dump($provider);
-
         $socialUser = Socialite::driver($provider)->user();
-
-        dump($socialUser);
 
         $user = User::updateOrCreate(
             ['email' => $socialUser->getEmail()],
