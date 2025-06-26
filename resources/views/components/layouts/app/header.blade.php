@@ -8,11 +8,11 @@
     <flux:header container class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc." class="max-lg:hidden dark:hidden" />
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc." class="max-lg:hidden! hidden dark:flex" />
+        <flux:brand href="{{ route('dashboard') }}" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc." class="max-lg:hidden dark:hidden" />
+        <flux:brand href="{{ route('dashboard') }}" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc." class="max-lg:hidden! hidden dark:flex" />
 
         <flux:navbar class="-mb-px max-lg:hidden">
-            <flux:navbar.item icon="home" href="#" current>Home</flux:navbar.item>
+            <flux:navbar.item icon="home" href="{{ route('dashboard') }}" current>Home</flux:navbar.item>
             <flux:navbar.item icon="inbox" badge="12" href="#">Inbox</flux:navbar.item>
             <flux:navbar.item icon="document-text" href="#">Documents</flux:navbar.item>
             <flux:navbar.item icon="calendar" href="#">Calendar</flux:navbar.item>
@@ -41,7 +41,7 @@
             <flux:profile :initials="auth()->user()->initials()" />
             
             <flux:menu>
-                <flux:menu.item icon="user" href="#">Account</flux:menu.item>
+                <flux:menu.item icon="user" href="{{ route('account') }}">Account</flux:menu.item>
                 <flux:menu.separator />
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
