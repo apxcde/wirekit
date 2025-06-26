@@ -14,7 +14,11 @@ final class SocialiteCallback
 
     public function asController(string $provider): RedirectResponse
     {
+        dump($provider);
+
         $socialUser = Socialite::driver($provider)->user();
+
+        dump($socialUser);
 
         $user = User::updateOrCreate(
             ['email' => $socialUser->getEmail()],
