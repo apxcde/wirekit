@@ -51,7 +51,7 @@
                     </div>
                 </flux:menu.radio.group>
                 <flux:menu.separator />
-                <flux:menu.item icon="cog" href="{{ route('account') }}">Settings</flux:menu.item>
+                <flux:menu.item icon="cog" href="{{ route('settings.profile') }}">Settings</flux:menu.item>
                 <flux:menu.separator />
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
@@ -66,8 +66,8 @@
     <flux:sidebar stashable sticky class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border rtl:border-r-0 rtl:border-l border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc." class="px-2 dark:hidden" />
-        <flux:brand href="#" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc." class="px-2 hidden dark:flex" />
+        <flux:brand href="{{ route('dashboard') }}" logo="https://fluxui.dev/img/demo/logo.png" name="Acme Inc." class="px-2 dark:hidden" />
+        <flux:brand href="{{ route('dashboard') }}" logo="https://fluxui.dev/img/demo/dark-mode-logo.png" name="Acme Inc." class="px-2 hidden dark:flex" />
         
         <flux:navlist variant="outline">
             <flux:navlist.item icon="home" href="#" current>Home</flux:navlist.item>
