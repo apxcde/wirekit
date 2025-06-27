@@ -26,7 +26,15 @@ new class extends Component {
 
     public function deleteAccount()
     {
-        // TODO: Delete account
+        $user = auth()->user();
+
+        \Illuminate\Support\Facades\Auth::logout();
+        \Illuminate\Support\Facades\Session::invalidate();
+        \Illuminate\Support\Facades\Session::regenerateToken();
+
+        $user->delete();
+
+        return redirect('/');
     }
 }
 
