@@ -41,7 +41,17 @@
             <flux:profile :initials="auth()->user()->initials()" />
             
             <flux:menu>
-                <flux:menu.item icon="user" href="{{ route('account') }}">Account</flux:menu.item>
+                <flux:menu.radio.group>
+                    <div class="flex gap-2 items-center p-2">
+                        <flux:avatar size="sm" :initials="auth()->user()->initials()" />
+                        <div>            
+                            <flux:heading>{{ auth()->user()->name }}</flux:heading>            
+                            <flux:text size="sm">{{ auth()->user()->email }}</flux:text>        
+                        </div>    
+                    </div>
+                </flux:menu.radio.group>
+                <flux:menu.separator />
+                <flux:menu.item icon="cog" href="{{ route('account') }}">Settings</flux:menu.item>
                 <flux:menu.separator />
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
