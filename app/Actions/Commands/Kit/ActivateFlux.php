@@ -57,7 +57,7 @@ final class ActivateFlux
 
     private function getFluxAuthJsonPath(Command $command): string
     {
-        $defaultSourceAuthJson = $_SERVER['HOME'].'/Herd/.flux/auth.json';
+        $defaultSourceAuthJson = $_SERVER['HOME'].'/Code/Herd/.flux/auth.json';
         if (File::exists($defaultSourceAuthJson)) {
             return $defaultSourceAuthJson;
         }
