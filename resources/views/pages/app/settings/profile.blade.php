@@ -2,31 +2,43 @@
 
 use function Laravel\Folio\{name, middleware};
 use Livewire\Volt\Component;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 middleware('auth:web');
 
 name('settings.profile');
 
 new class extends Component {
-    public $name;
-    public $email;
+    public string $name;
+    public string $email;
+
+    public $user;
 
     public function mount()
     {
-        $this->name = auth()->user()->name;
-        $this->email = auth()->user()->email;
+        $this->user = Auth::user();
+
+        $this->name = $this->user->name;
+        $this->email = $this->user->email;
     }
 
     public function updateProfile()
     {
         $this->validate([ 'name' => 'required|string|max:255' ]);
-        auth()->user()->update([ 'name' => $this->name ]);
+        $this->user->update([ 'name' => $this->name ]);
         $this->dispatch('saved');
     }    
 
     public function deleteAccount()
     {
-        // TODO: Delete account
+        Auth::logout();
+        Session::invalidate();
+        Session::regenerateToken();
+
+        $this->user->delete();
+
+        return redirect('/');
     }
 }
 
