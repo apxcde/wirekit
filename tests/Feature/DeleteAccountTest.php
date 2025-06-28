@@ -17,7 +17,7 @@ class DeleteAccountTest extends TestCase
 
         Volt::actingAs($user);
 
-        Volt::test('app.settings.profile')
+        Volt::test('profile')
             ->call('deleteAccount')
             ->assertRedirect('/');
 
