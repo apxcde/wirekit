@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Actions\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Http\RedirectResponse;
 
-final class MagicLoginLink
+class MagicLoginLinkController extends Controller
 {
-    use AsAction;
-
-    public function asController(Request $request): RedirectResponse
+    public function __invoke(Request $request): RedirectResponse
     {
         $userId = request()->query('user');
 

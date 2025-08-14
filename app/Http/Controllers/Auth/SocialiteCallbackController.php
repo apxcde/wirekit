@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Actions\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
-final class SocialiteCallback
+class SocialiteCallbackController extends Controller
 {
-    use AsAction;
-    
-    public function asController(string $provider): RedirectResponse
+    public function __invoke(Request $request, string $provider): RedirectResponse
     {
         $socialUser = Socialite::driver($provider)->user();
 
