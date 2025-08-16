@@ -61,6 +61,7 @@
             "@php artisan kit:install",
             "@php artisan kit:activate-flux",
             "@php artisan kit:initialize-git",
+            "@php artisan kit:install-laravel-boost",
             "@php artisan kit:clean-up"
         ],
         "dev": [
