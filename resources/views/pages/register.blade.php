@@ -36,6 +36,11 @@ new class extends Component {
 <x-layouts.base>
     <div class="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-[480px]">
+            <div class="flex justify-center mb-8">
+                <a href="/">
+                    <img src="{{ asset('logo.svg') }}" alt="Logo" class="h-16 w-auto">
+                </a>
+            </div>
             @volt('register')
                 <div class="bg-white dark:bg-zinc-800 px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
                     @if($error)
