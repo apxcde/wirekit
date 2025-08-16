@@ -7,7 +7,7 @@ use Lorisleiva\Actions\Concerns\AsCommand;
 use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 
-use function Laravel\Prompts\{confirm, multiselect, text};
+use function Laravel\Prompts\{confirm, select, text};
 
 final class Install
 {
@@ -30,7 +30,7 @@ final class Install
         $this->setUpEnvFile($command);
         $this->setProjectName($command);
         $this->reloadEnvironment();
-        $this->installAuth($command);
+        $this->selectAuth($command);
         $this->runMigrations($command);
     }
 
@@ -96,9 +96,9 @@ final class Install
         ]);
     }
 
-    private function installAuth(Command $command): void
+    private function selectAuth(Command $command): void
     {
-        $authChoices = multiselect(
+        $authChoices = select(
             label: 'Select authentication scaffolding',
             options: [
                 'magic-link' => 'Magic Link',
@@ -106,48 +106,8 @@ final class Install
             ],
             required: true,
         );
-
-        $includeGoogle = confirm('Include Google provider?', false);
-        $includeGithub = confirm('Include GitHub provider?', false);
-
-        $stubs = [
-            'magic-link' => base_path('stubs/auth/magic-link'),
-            'email-password' => base_path('stubs/auth/email-password'),
-            'socialite-google' => base_path('stubs/auth/socialite-google'),
-            'socialite-github' => base_path('stubs/auth/socialite-github'),
-        ];
-
-        $selectedKeys = $authChoices;
-
-        if ($includeGoogle) {
-            $selectedKeys[] = 'socialite-google';
-        }
-
-        if ($includeGithub) {
-            $selectedKeys[] = 'socialite-github';
-        }
-
-        $selectedKeys = array_unique($selectedKeys);
-
-        foreach ($selectedKeys as $key) {
-            if (isset($stubs[$key]) && File::isDirectory($stubs[$key])) {
-                File::copyDirectory($stubs[$key], base_path());
-            }
-        }
-
-        foreach ($stubs as $key => $path) {
-            if (! in_array($key, $selectedKeys, true) && File::isDirectory($path)) {
-                File::deleteDirectory($path);
-            }
-        }
-
-        if (! empty($selectedKeys)) {
-            $command->call('config:clear', ['--ansi' => true]);
-            $command->call('migrate', [
-                '--force' => true,
-                '--ansi' => true,
-            ]);
-        }
+        $command->info('🏗️ Still working on this... auth is magic link only for now.');
+        $command->line('');
     }
 
     private function runMigrations(Command $command): void
