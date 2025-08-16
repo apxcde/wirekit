@@ -62,7 +62,7 @@ return [
     |
     */
 
-    NunoMaduro\Essentials\Configurables\ForceScheme::class => true,
+    NunoMaduro\Essentials\Configurables\ForceScheme::class => env('ESSENTIALS_FORCE_HTTPS_SCHEME', true),
 
     /*
     |--------------------------------------------------------------------------
