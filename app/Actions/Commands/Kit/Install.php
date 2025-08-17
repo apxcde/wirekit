@@ -123,14 +123,6 @@ final class Install
             resource_path('views/pages')
         );
 
-        $webRoutesPath = base_path('routes/web.php');
-        $webRoutesContent = File::get($webRoutesPath);
-        
-        if (!str_contains($webRoutesContent, "require __DIR__.'/auth.php';")) {
-            $webRoutesContent .= "\nrequire __DIR__.'/auth.php';\n";
-            File::put($webRoutesPath, $webRoutesContent);
-        }
-
         $command->info('✅ Magic Link authentication installed successfully!');
         $command->line('');
     }
