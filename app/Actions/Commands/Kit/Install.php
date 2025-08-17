@@ -136,17 +136,6 @@ final class Install
             resource_path('views/pages')
         );
 
-        $authRoutesPath = base_path('routes/auth.php');
-        if (File::exists($authRoutesPath)) {
-            File::delete($authRoutesPath);
-        }
-
-        $webRoutesPath = base_path('routes/web.php');
-        $webRoutesContent = File::get($webRoutesPath);
-        $webRoutesContent = str_replace("require __DIR__.'/auth.php';", '', $webRoutesContent);
-        $webRoutesContent = trim($webRoutesContent) . "\n";
-        File::put($webRoutesPath, $webRoutesContent);
-
         $command->info('✅ Email & Password authentication installed successfully!');
         $command->line('');
     }
