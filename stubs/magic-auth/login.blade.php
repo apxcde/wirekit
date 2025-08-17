@@ -4,7 +4,6 @@ use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Actions\Auth\LoginOrRegisterUser;
-use Illuminate\Support\Facades\Session;
 
 use function Laravel\Folio\{name, middleware};
 
@@ -13,38 +12,31 @@ middleware('guest');
 name('login');
 
 new class extends Component {
-    #[Validate(['required', 'email'])]
+    public bool $error = false;
+    public bool $success = false;
+
+    #[Validate(['required', 'email', 'exists:users'])]
     public string $email = '';
 
-    #[Validate(['required'])]
-    public string $password = '';
-
-    public bool $remember = false;
-
-    public function login()
+    public function login(): void
     {
         $this->validate();
 
-        $throttleKey = 'login.' . request()->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $this->addError('email', "Too many login attempts. Please try again later.");
+        if (RateLimiter::tooManyAttempts('magic-link:' . $this->email, 5)) {
+            $this->addError('email', 'Too many attempts. Please try again later.');
             return;
         }
 
-        $credentials = [
-            'email' => $this->email,
-            'password' => $this->password,
-        ];
+        RateLimiter::hit('magic-link:' . $this->email, 60);
 
-        if (auth()->attempt($credentials, $this->remember)) {
-            RateLimiter::clear($throttleKey);
-            session()->regenerate();
-            return $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
-        } else {
-            RateLimiter::hit($throttleKey);
-            Session::flash('error', 'These credentials do not match our records.');
-            $this->addError('email', 'These credentials do not match our records.');
+        $results = LoginOrRegisterUser::run($this->email);
+
+        if ($results) {
+            $this->success = true;
+            return;
         }
+
+        $this->error = true;
     }
 }
 
@@ -60,41 +52,18 @@ new class extends Component {
             </div>
             @volt('login')
                 <div class="bg-white dark:bg-zinc-800 px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
-                    @if(session('error'))
-                        <flux:callout class="mb-4" variant="danger" icon="x-circle" heading="{{ session('error') }}" />
+
+                    @if($error)
+                        <flux:callout class="mb-4" variant="danger" icon="x-circle" heading="Something went wrong. Try again or contact support."/>
                     @endif
 
-                    @if(session('status'))
-                        <flux:callout class="mb-4" variant="success" icon="check-circle" heading="{{ session('status') }}" />
+                    @if($success)
+                        <flux:callout class="mb-4" variant="success" icon="check-circle" heading="Login link sent to your email."/>
                     @endif
 
-                    <div class="space-y-4">
-                        <flux:input wire:model="email" type="email" label="Email" />
-
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Password</label>
-                                <div class="text-sm">
-                                    <flux:link variant="subtle" href="{{ route('password.request') }}">Forgot password?</flux:link>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <flux:input wire:model="password" type="password" viewable />
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <flux:checkbox wire:model="remember" label="Remember me" />
-                        </div>
-
-                        <flux:button wire:click="login" variant="primary" class="w-full mt-4">Login</flux:button>
-                    </div>
-
-                    <div class="mt-6 text-center">
-                        <flux:text class="text-sm text-gray-600 dark:text-gray-400">
-                            Don't have an account? 
-                            <flux:link href="{{ route('register') }}" variant="subtle">Sign up</flux:link>
-                        </flux:text>
+                    <div class="space-y-6">
+                        <flux:input wire:model="email" type="email" placeholder="erick@apexcode.dev" label="Email address" />
+                        <flux:button wire:click="login" variant="primary" class="w-full">Login with email</flux:button>
                     </div>
             
                     <div>
