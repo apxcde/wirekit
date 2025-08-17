@@ -31,6 +31,7 @@ final class Install
         $this->setProjectName($command);
         $this->reloadEnvironment();
         $this->selectAuth($command);
+        $this->cleanupStubsDirectory($command);
         $this->runMigrations($command);
     }
 
@@ -98,7 +99,7 @@ final class Install
 
     private function selectAuth(Command $command): void
     {
-        $authChoices = select(
+        $authChoice = select(
             label: 'Select authentication scaffolding',
             options: [
                 'magic-link' => 'Magic Link',
@@ -106,8 +107,88 @@ final class Install
             ],
             required: true,
         );
-        $command->info('🏗️ Still working on this... auth is magic link only for now.');
+
+        if ($authChoice === 'magic-link') {
+            $this->installMagicLinkAuth($command);
+        } else {
+            $this->installPasswordAuth($command);
+        }
+    }
+
+    private function installMagicLinkAuth(Command $command): void
+    {
+        $command->line('Installing Magic Link authentication...');
+
+        $this->copyDirectory(
+            resource_path('views/stubs/magic-auth'),
+            resource_path('views/pages')
+        );
+
+        $webRoutesPath = base_path('routes/web.php');
+        $webRoutesContent = File::get($webRoutesPath);
+        
+        if (!str_contains($webRoutesContent, "require __DIR__.'/auth.php';")) {
+            $webRoutesContent .= "\nrequire __DIR__.'/auth.php';\n";
+            File::put($webRoutesPath, $webRoutesContent);
+        }
+
+        $command->info('✅ Magic Link authentication installed successfully!');
         $command->line('');
+    }
+
+    private function installPasswordAuth(Command $command): void
+    {
+        $command->line('Installing Email & Password authentication...');
+        
+        $this->copyDirectory(
+            resource_path('views/stubs/password-auth'),
+            resource_path('views/pages')
+        );
+
+        $authRoutesPath = base_path('routes/auth.php');
+        if (File::exists($authRoutesPath)) {
+            File::delete($authRoutesPath);
+        }
+
+        $webRoutesPath = base_path('routes/web.php');
+        $webRoutesContent = File::get($webRoutesPath);
+        $webRoutesContent = str_replace("require __DIR__.'/auth.php';", '', $webRoutesContent);
+        $webRoutesContent = trim($webRoutesContent) . "\n";
+        File::put($webRoutesPath, $webRoutesContent);
+
+        $command->info('✅ Email & Password authentication installed successfully!');
+        $command->line('');
+    }
+
+    private function copyDirectory(string $source, string $destination): void
+    {
+        if (! File::exists($destination)) {
+            File::makeDirectory($destination, 0755, true);
+        }
+
+        $files = File::allFiles($source);
+        
+        foreach ($files as $file) {
+            $relativePath = $file->getRelativePathname();
+            $targetPath = $destination . '/' . $relativePath;
+            
+            $targetDir = dirname($targetPath);
+            if (!File::exists($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true);
+            }
+            
+            File::copy($file->getPathname(), $targetPath);
+        }
+    }
+
+    private function cleanupStubsDirectory(Command $command): void
+    {
+        $stubsPath = resource_path('views/stubs');
+        
+        if (File::exists($stubsPath)) {
+            File::deleteDirectory($stubsPath);
+            $command->line('🧹 Cleaned up stubs directory.');
+        }
     }
 
     private function runMigrations(Command $command): void
