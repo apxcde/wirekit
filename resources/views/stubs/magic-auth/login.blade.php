@@ -62,7 +62,7 @@ new class extends Component {
                     @endif
 
                     <div class="space-y-6">
-                        <flux:input wire:model="email" type="email" placeholder="erick@apexcode.dev" label="Email address" />
+                        <flux:input wire:model="email" type="email" label="Email" />
                         <flux:button wire:click="login" variant="primary" class="w-full">Login with email</flux:button>
                     </div>
             

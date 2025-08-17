@@ -31,7 +31,6 @@ final class Install
         $this->setProjectName($command);
         $this->reloadEnvironment();
         $this->selectAuth($command);
-        $this->cleanupStubsDirectory($command);
         $this->runMigrations($command);
     }
 
@@ -178,16 +177,6 @@ final class Install
             }
             
             File::copy($file->getPathname(), $targetPath);
-        }
-    }
-
-    private function cleanupStubsDirectory(Command $command): void
-    {
-        $stubsPath = resource_path('views/stubs');
-        
-        if (File::exists($stubsPath)) {
-            File::deleteDirectory($stubsPath);
-            $command->line('🧹 Cleaned up stubs directory.');
         }
     }
 

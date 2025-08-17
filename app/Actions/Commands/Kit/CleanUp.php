@@ -4,10 +4,12 @@ namespace App\Actions\Commands\Kit;
 
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use FilesystemIterator;
+
 
 final class CleanUp
 {
@@ -71,6 +73,8 @@ final class CleanUp
 
     public function asCommand(Command $command)
     {
+        $this->cleanupStubsDirectory($command);
+
         $this->installationDir = app_path('Actions/Commands/Kit');
 
         $command->line("Cleaning up installation files in: $this->installationDir");
@@ -81,5 +85,17 @@ final class CleanUp
         }
 
         $this->handle($command);
+    }
+
+    private function cleanupStubsDirectory(Command $command): void
+    {
+        $stubsPath = resource_path('views/stubs');
+
+        $command->line("Cleaning up installation files in: $stubsPath");
+
+        if (File::exists($stubsPath)) {
+            File::deleteDirectory($stubsPath);
+            $command->line('🧹 Cleaned up stubs directory.');
+        }
     }
 }
