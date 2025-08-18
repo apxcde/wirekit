@@ -4,6 +4,10 @@ namespace App\Actions\Commands\Kit;
 
 use Illuminate\Support\Facades\File;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use FilesystemIterator;
+
 class KitHelpers
 {
     public static function copyDirectory(string $source, string $destination): void
@@ -84,5 +88,25 @@ class KitHelpers
         if (File::exists($resetPasswordDir) && empty(File::files($resetPasswordDir))) {
             File::deleteDirectory($resetPasswordDir);
         }
+    }
+
+    public static function cleanupInstallationFiles(): void
+    {
+        $installationDir = app_path('Actions/Commands/Kit');
+
+        if (!is_dir($installationDir)) {
+            return;
+        }
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($installationDir, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $file) {
+            $file->isDir() ? rmdir($file->getRealPath()) : unlink($file->getRealPath());
+        }
+
+        rmdir($installationDir);
     }
 }
