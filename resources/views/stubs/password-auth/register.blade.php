@@ -1,9 +1,10 @@
 <?php
 
-use App\Actions\Auth\LoginOrRegisterUser;
+use App\Actions\Auth\RegisterUser;
 use Livewire\Volt\Component;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 use function Laravel\Folio\{name, middleware};
 
@@ -25,7 +26,7 @@ new class extends Component {
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = LoginOrRegisterUser::run($this->email, $this->name, $this->password);
+        $user = RegisterUser::run($this->email, $this->name, $this->password);
 
         if ($user) {
             Auth::login($user);
