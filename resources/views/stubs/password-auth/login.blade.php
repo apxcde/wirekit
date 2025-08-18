@@ -2,9 +2,7 @@
 
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
-use Illuminate\Support\Facades\RateLimiter;
-use App\Actions\Auth\LoginOrRegisterUser;
-use Illuminate\Support\Facades\Session;
+use App\Actions\Auth\LoginUser;
 
 use function Laravel\Folio\{name, middleware};
 
@@ -25,26 +23,11 @@ new class extends Component {
     {
         $this->validate();
 
-        $throttleKey = 'login.' . request()->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $this->addError('email', "Too many login attempts. Please try again later.");
-            return;
-        }
-
-        $credentials = [
-            'email' => $this->email,
-            'password' => $this->password,
-        ];
-
-        if (auth()->attempt($credentials, $this->remember)) {
-            RateLimiter::clear($throttleKey);
-            session()->regenerate();
+        if (LoginUser::run($this->email, $this->password, $this->remember)) {
             return $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
-        } else {
-            RateLimiter::hit($throttleKey);
-            Session::flash('error', 'These credentials do not match our records.');
-            $this->addError('email', 'These credentials do not match our records.');
         }
+
+        $this->addError('email', 'These credentials do not match our records.');
     }
 }
 
@@ -60,14 +43,6 @@ new class extends Component {
             </div>
             @volt('login')
                 <div class="bg-white dark:bg-zinc-800 px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
-                    @if(session('error'))
-                        <flux:callout class="mb-4" variant="danger" icon="x-circle" heading="{{ session('error') }}" />
-                    @endif
-
-                    @if(session('status'))
-                        <flux:callout class="mb-4" variant="success" icon="check-circle" heading="{{ session('status') }}" />
-                    @endif
-
                     <div class="space-y-4">
                         <flux:input wire:model="email" type="email" label="Email" />
 

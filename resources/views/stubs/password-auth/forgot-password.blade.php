@@ -54,7 +54,7 @@ new class extends Component {
                         </flux:button>
                     </div>
 
-                    <div class="mt-6 text-center">
+                    <div class="mt-6 text-center text-sm">
                         <flux:link href="{{ route('login') }}" variant="subtle">
                             ← Back to login
                         </flux:link>
