@@ -44,7 +44,7 @@ new class extends Component {
         <div class="sm:mx-auto sm:w-full sm:max-w-[480px]">
             <div class="flex justify-center mb-8">
                 <a href="/">
-                    <img src="{{ asset('logo.svg') }}" alt="Logo" class="h-16 w-auto">
+                    <img src="{{ asset('logo.svg') }}" alt="Logo" class="h-16 w-auto dark:invert">
                 </a>
             </div>
             @volt('register')
