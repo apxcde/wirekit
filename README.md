@@ -132,6 +132,12 @@ php artisan migrate:rollback
 
 ### Kit-Specific Commands
 ```bash
+# Install the complete kit
+php artisan kit:install
+
+# Install auth files only, helpful when tinkering the kit
+php artisan kit:install --auth-only
+
 # Activate Flux UI Pro (required for full functionality)
 php artisan kit:activate-flux
 
@@ -141,8 +147,11 @@ php artisan kit:initialize-git
 # Clean up installation files
 php artisan kit:clean-up
 
-# Install the complete kit
-php artisan kit:install
+# delete the files copied over from using `php artisan kit:install --auth-only`
+php artisan kit:clean-up --auth-views-only
+
+# Install Laravel Boost (development tool)
+php artisan kit:install-laravel-boost
 ```
 
 ## Key Architectural Patterns
