@@ -2,10 +2,11 @@
 
 namespace App\Actions\Commands\Kit;
 
+use App\Actions\Commands\Kit\KitHelpers;
 use Illuminate\Console\Command;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
+use Illuminate\Support\Facades\File;
+use Lorisleiva\Actions\Concerns\AsCommand;
 
 use function Laravel\Prompts\{confirm, select, text};
 
@@ -13,12 +14,18 @@ final class Install
 {
     use AsCommand;
 
-    public $commandSignature = 'kit:install';
+    public $commandSignature = 'kit:install {--auth-only}';
 
     public $commandDescription = 'Run WireKit installation process';
 
     public function asCommand(Command $command): void
     {
+        if ($command->option('auth-only')) {
+            $command->line('Installing authentication only...');
+            $this->selectAuth($command);
+            return;
+        }
+
         $command->line('Starting WireKit installation process...');
         $command->line('');
 
@@ -108,56 +115,11 @@ final class Install
         );
 
         if ($authChoice === 'magic-link') {
-            $this->installMagicLinkAuth($command);
+            KitHelpers::installMagicLinkAuth();
+            $command->info('✅ Magic link authentication installed successfully!');
         } else {
-            $this->installPasswordAuth($command);
-        }
-    }
-
-    private function installMagicLinkAuth(Command $command): void
-    {
-        $command->line('Installing Magic Link authentication...');
-
-        $this->copyDirectory(
-            resource_path('views/stubs/magic-auth'),
-            resource_path('views/pages')
-        );
-
-        $command->info('✅ Magic Link authentication installed successfully!');
-        $command->line('');
-    }
-
-    private function installPasswordAuth(Command $command): void
-    {
-        $command->line('Installing Email & Password authentication...');
-        
-        $this->copyDirectory(
-            resource_path('views/stubs/password-auth'),
-            resource_path('views/pages')
-        );
-
-        $command->info('✅ Email & Password authentication installed successfully!');
-        $command->line('');
-    }
-
-    private function copyDirectory(string $source, string $destination): void
-    {
-        if (! File::exists($destination)) {
-            File::makeDirectory($destination, 0755, true);
-        }
-
-        $files = File::allFiles($source);
-        
-        foreach ($files as $file) {
-            $relativePath = $file->getRelativePathname();
-            $targetPath = $destination . '/' . $relativePath;
-            
-            $targetDir = dirname($targetPath);
-            if (!File::exists($targetDir)) {
-                File::makeDirectory($targetDir, 0755, true);
-            }
-            
-            File::copy($file->getPathname(), $targetPath);
+            KitHelpers::installPasswordAuth();
+            $command->info('✅ Email & Password authentication installed successfully!');
         }
     }
 
