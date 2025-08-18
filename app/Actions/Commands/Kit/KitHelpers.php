@@ -42,4 +42,47 @@ class KitHelpers
             resource_path('views/pages')
         );
     }
+
+    public static function cleanupStubsDirectory(): void
+    {
+        $path = resource_path('views/stubs');
+        
+        if (File::exists($path)) {
+            File::deleteDirectory($path);
+        }
+    }
+
+    public static function cleanupAuthViews(): void
+    {
+        $magicAuthFiles = [
+            'login.blade.php',
+            'register.blade.php'
+        ];
+        
+        foreach ($magicAuthFiles as $file) {
+            $filePath = resource_path('views/pages/' . $file);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+        }
+        
+        $passwordAuthFiles = [
+            'login.blade.php',
+            'register.blade.php',
+            'forgot-password.blade.php',
+            'reset-password/[token].blade.php'
+        ];
+        
+        foreach ($passwordAuthFiles as $file) {
+            $filePath = resource_path('views/pages/' . $file);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+        }
+        
+        $resetPasswordDir = resource_path('views/pages/reset-password');
+        if (File::exists($resetPasswordDir) && empty(File::files($resetPasswordDir))) {
+            File::deleteDirectory($resetPasswordDir);
+        }
+    }
 }

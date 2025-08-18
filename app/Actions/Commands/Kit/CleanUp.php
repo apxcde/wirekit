@@ -2,9 +2,8 @@
 
 namespace App\Actions\Commands\Kit;
 
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsCommand;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -13,15 +12,38 @@ use FilesystemIterator;
 
 final class CleanUp
 {
-    use AsAction;
+    use AsCommand;
 
-    public $commandSignature = 'kit:clean-up';
+    public $commandSignature = 'kit:clean-up {--auth-views-only}';
 
     public $commandDescription = 'Deletes installation files including this cleanup command.';
 
     public $installationDir;
 
-    public function handle(Command $command)
+    public function asCommand(Command $command)
+    {
+        if ($command->option('auth-views-only')) {
+            KitHelpers::cleanupAuthViews();
+            $command->info('🧹 Cleaned up auth views.');
+            return;
+        }
+
+        KitHelpers::cleanupStubsDirectory();
+        $command->info('🧹 Cleaned up stubs directory.');
+
+        $this->installationDir = app_path('Actions/Commands/Kit');
+
+        $command->line("Cleaning up installation files in: $this->installationDir");
+        
+        if (!is_dir($this->installationDir)) {
+            $command->warn("Directory does not exist: $this->installationDir");
+            return;
+        }
+
+        $this->cleanupInstallationFiles($command);
+    }
+
+    private function cleanupInstallationFiles(Command $command)
     {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($this->installationDir, FilesystemIterator::SKIP_DOTS),
@@ -69,33 +91,5 @@ final class CleanUp
 
         file_put_contents($composerPath, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
         $command->info('🧹 kit commands removed from composer.json.');
-    }
-
-    public function asCommand(Command $command)
-    {
-        $this->cleanupStubsDirectory($command);
-
-        $this->installationDir = app_path('Actions/Commands/Kit');
-
-        $command->line("Cleaning up installation files in: $this->installationDir");
-        
-        if (!is_dir($this->installationDir)) {
-            $command->warn("Directory does not exist: $this->installationDir");
-            return;
-        }
-
-        $this->handle($command);
-    }
-
-    private function cleanupStubsDirectory(Command $command): void
-    {
-        $stubsPath = resource_path('views/stubs');
-
-        $command->line("Cleaning up installation files in: $stubsPath");
-
-        if (File::exists($stubsPath)) {
-            File::deleteDirectory($stubsPath);
-            $command->line('🧹 Cleaned up stubs directory.');
-        }
     }
 }
