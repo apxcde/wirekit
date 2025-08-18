@@ -21,7 +21,7 @@ final class RegisterUser
             $userData = [
                 'name' => $name,
                 'email' => $email,
-                'password' => $password ?? Hash::make($password),
+                'password' => $password ? Hash::make($password) : null,
             ];
             event(new Registered(($user = User::create($userData))));
 
