@@ -11,7 +11,7 @@ use App\Mail\MagicLoginLink;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 
-final class LoginOrRegisterUser
+final class RegisterUser
 {
     use AsAction;
 

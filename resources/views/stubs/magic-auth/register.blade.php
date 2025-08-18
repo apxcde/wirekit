@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\Auth\LoginOrRegisterUser;
+use App\Actions\Auth\RegisterUser;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
@@ -20,7 +20,7 @@ new class extends Component {
     public function register()
     {
         $this->validate();
-        $results = LoginOrRegisterUser::run($this->email);
+        $results = RegisterUser::run($this->email);
 
         if ($results) {
             $this->success = true;

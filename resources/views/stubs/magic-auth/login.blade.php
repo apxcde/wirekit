@@ -3,7 +3,7 @@
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\RateLimiter;
-use App\Actions\Auth\LoginOrRegisterUser;
+use App\Actions\Auth\LoginUser;
 
 use function Laravel\Folio\{name, middleware};
 
@@ -29,7 +29,7 @@ new class extends Component {
 
         RateLimiter::hit('magic-link:' . $this->email, 60);
 
-        $results = LoginOrRegisterUser::run($this->email);
+        $results = LoginUser::run($this->email);
 
         if ($results) {
             $this->success = true;
